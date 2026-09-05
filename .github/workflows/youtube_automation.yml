@@ -4,8 +4,11 @@ on:
   schedule:
     # Subah 8:00 AM, Dopahar 2:00 PM aur Raat 8:00 PM (IST)
     - cron: '30 2,8,14 * * *'
-  
+
   workflow_dispatch:
+
+permissions:
+  contents: write   # commit/push ke liye default GITHUB_TOKEN ko write access chahiye
 
 jobs:
   run-automation:
@@ -33,11 +36,11 @@ jobs:
 
       - name: Setup JSON Credentials
         run: |
-          # Dono root aur subfolder me client_secret.json aur token.json create kar do
-          echo '${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}' > client_secret.json
-          echo '${{ secrets.YOUTUBE_TOKEN_JSON }}' > token.json
+          mkdir -p "YT Automation Pro/tokens"
+          # client_secret.json OAuth client credentials hai
           echo '${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}' > "YT Automation Pro/client_secret.json"
-          echo '${{ secrets.YOUTUBE_TOKEN_JSON }}' > "YT Automation Pro/token.json"
+          # token ko sahi jagah rakho: tokens/token_<account>.json (config.py ke ACCOUNTS = ["main_channel"] ke hisaab se)
+          echo '${{ secrets.YOUTUBE_TOKEN_JSON }}' > "YT Automation Pro/tokens/token_main_channel.json"
 
       - name: Execute YT Automation Script
         env:
@@ -53,6 +56,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
+          # tokens/ aur data/ .gitignore me hai (local safety ke liye), isliye force-add karna padega
+          git add -f "YT Automation Pro/tokens" "YT Automation Pro/data" 2>/dev/null || true
           git commit -m "Auto-update tokens & state data [skip ci]" || exit 0
           git push
