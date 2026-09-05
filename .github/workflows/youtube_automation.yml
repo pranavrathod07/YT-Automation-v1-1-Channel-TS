@@ -51,12 +51,15 @@ jobs:
           cd "YT Automation Pro"
           python main.py
 
-      - name: Commit Updated Tokens & State
+      - name: Commit Updated State
         if: always()
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # tokens/ aur data/ .gitignore me hai (local safety ke liye), isliye force-add karna padega
-          git add -f "YT Automation Pro/tokens" "YT Automation Pro/data" 2>/dev/null || true
-          git commit -m "Auto-update tokens & state data [skip ci]" || exit 0
+          # SIRF state (data/) commit karo — ye secret nahi hai (song rotation, used video ids).
+          # tokens/ aur client_secret.json KABHI commit mat karo (OAuth secrets hai,
+          # GitHub push protection isko block karega, aur ye security risk bhi hai).
+          # refresh_token GitHub Secret (YOUTUBE_TOKEN_JSON) me hi rehta hai, git me save karne ki zaroorat nahi.
+          git add -f "YT Automation Pro/data" 2>/dev/null || true
+          git commit -m "Auto-update state data [skip ci]" || exit 0
           git push
