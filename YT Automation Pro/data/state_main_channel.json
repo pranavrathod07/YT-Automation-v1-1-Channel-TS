@@ -1,6 +1,6 @@
 {
-  "song_index": 9,
-  "cycle_count": 5,
+  "song_index": 0,
+  "cycle_count": 6,
   "used_pixabay_ids": [
     32386,
     51199,
@@ -60,6 +60,7 @@
     32845,
     275516,
     3322,
-    27070
+    27070,
+    48044
   ]
 }
